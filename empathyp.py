@@ -20,10 +20,8 @@ core.wait(0.5)
 
 
 def getResponse(validResponses,duration=0):
-	"""Returns keypress and RT. Specify a duration (in secs) if you want response collection to last 
-        that long. Unlike event.waitkeys(maxWait=..), this function will not exit until duration. 
-        Use waitKeys with a maxWait parameter if you want to have a response deadline, but exit as soon 
-        as a response is received."""
+	"""Returns keypress and RT. Specify a duration (in secs) if you want response collection to last  that long. Unlike event.waitkeys(maxWait=..), this function will not exit until duration. 
+        Use waitKeys with a maxWait parameter if you want to have a response deadline, but exit as soon as a response is received."""
 	event.clearEvents() #important - prevents buffer overruns
 	responded = False
 	timeElapsed = False
@@ -135,7 +133,7 @@ def empathyp(expe):
 	# Setup Paths to read files
 	#---------------------------------------
 
-	im_dir = 'Stim'
+	im_dir = 'Stimuli'
 
 	#---------------------------------------
 	# Hypnosis  Induction Routine
@@ -218,7 +216,7 @@ def empathyp(expe):
 
 		key_code = MR_settings['sync']
 		counter = visual.TextStim(win, height=.05, pos=(0,0), color=win.rgb+0.5)
-		output += "0	0.000 %s start of scanning run, vol 0\n" % key_code 
+		output += "00.000 %s start of scanning run, vol 0\n" % key_code 
 		pause_during_delay = (MR_settings['TR']>.4)
 		sync_now = False
 
@@ -322,18 +320,14 @@ def empathyp(expe):
 				#--------------------------------------
 				if thisTrial['Stim'] != 'pause':	
 					stim = visual.ImageStim(win, image = os.path.join(im_dir, thisTrial['Stim']), size=(STIM_SIZE ))
-					stim.setPos(thisTrial['Position'])
 				thisITI = thisTrial['ITI']
 				stimOnset = trialClock.getTime()
 				
-				if thisTrial['Position'] == [0, 0]: # remove fixation cross if stim is centered
-					fixation_cross.setAutoDraw(False)
 				
 				#--------------------------------------
 				# Display trials		
 				#--------------------------------------
 				if thisTrial['Stim'] != 'probe.png' and thisTrial['Stim'] != 'pause': # case trial is stimuli 
-					#fade(stim)
 					while trialClock.getTime() < stimOnset + StimDuration :
 						fixation_cross.draw()
 						fixation.draw()
@@ -345,13 +339,11 @@ def empathyp(expe):
 						thisRespKeys = theseKeys[-1] # get just the last key pressed
 						thisResponseTime = trialClock.getTime() 
 				
-				elif thisTrial['Stim'] == 'probe.png': # case trial is thought probe
-					stim.setSize([0.1,0.1])
+				elif thisTrial['Stim'] == 'blank': # case trial is thought probe
 					fixation.draw()
 					stim.draw()
 					win.flip()	
-				#	core.wait(1,hogCPUperiod=1)
-					theseKeys = event.waitKeys(keyList= keyProbe)
+					core.wait(1,hogCPUperiod=1)
 					if len(theseKeys)>0: # at least one key was pressed
 						thisRespKeys = theseKeys[-1] # get just the last key pressed
 						thisResponseTime = trialClock.getTime() 
