@@ -321,7 +321,7 @@ def empathyp(expe):
 				# variables
 				#--------------------------------------
 				if thisTrial['Stim'] != 'pause':	
-					stim = visual.ImageStim(win, image = os.path.join(im_dir, thisTrial['Stim']), size=(STIM_SIZE ), opacity = 1.0)
+					stim = visual.ImageStim(win, image = os.path.join(im_dir, thisTrial['Stim']), size=(STIM_SIZE ))
 					stim.setPos(thisTrial['Position'])
 				thisITI = thisTrial['ITI']
 				stimOnset = trialClock.getTime()
