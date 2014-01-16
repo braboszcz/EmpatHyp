@@ -34,22 +34,23 @@ def getResponse(validResponses,duration=0):
 		return [responded[0],rt] #only get the first response. no timer for waitKeys, so do it manually w/ a clock
 	else:
 		while responseTimer.getTime() < duration:
+			print responseTimer.getTime(), duration	
 			if not responded:
 				responded = event.getKeys(keyList=validResponses,timeStamped=responseTimer)
+				print responded
 		if not responded:
 			return ['*','*']
 		else:
 			return responded[0]  #only get the first resp
-
 
 def empathyp(expe):
 	#---------------------------------------
 	# Set Variables
 	#---------------------------------------
 
-	TRIALS_FILE = 'trialList_short.csv'
+	TRIALS_FILE = 'toto.csv'
 	PAUSE = 10 # Time to pause for hypnosis reinforcement
-	STIM_SIZE = 0.1,0.15 
+	STIM_SIZE = 0.5, 0.5 
 	BACKGROUND_COLOR = [-0.5, -0.5, -0.5]
 	
 	start_expe = 0
@@ -88,7 +89,7 @@ def empathyp(expe):
 	#---------------------------------------
 
 	expName = 'Empathyp'  
-	expInfo = {'participant':'', 'session':}
+	expInfo = {'participant':'', 'session': ''}
 	dlg = gui.DlgFromDict(dictionary=expInfo, title=expName)
 	if dlg.OK == False: core.quit()  # user pressed cancel  
 	expInfo['date'] = data.getDateStr()  # add a simple timestamp  
@@ -135,13 +136,6 @@ def empathyp(expe):
 
 	im_dir = 'Stimuli'
 
-	#---------------------------------------
-	# Hypnosis  Induction Routine
-	#---------------------------------------
-	def induction():
-		fixation.draw()
-		fixation_cross.draw()
-		win.flip()
 	
 	#---------------------------------------
 	# Setup instructions
@@ -174,10 +168,8 @@ def empathyp(expe):
 		   text='+',
 		   font='Arial',
 		   pos=[0, 0], height=0.06,		
-		   color='black')
+		   color='white')
 	fixation_cross.setLineWidth = 0.4
-
-	StimDuration =.5
 
 
 
@@ -271,17 +263,13 @@ def empathyp(expe):
 		
 	
 		trialStart = 0
-		#--------------------------------------
-		# Do Hypnosis Induction	
-		#--------------------------------------
-		induction()
-		event.waitKeys(keyList = keyInd)
 		
 		#--------------------------------------
 		# START EXPERIMENT
 		#--------------------------------------
 		fixation_cross.draw()
 		win.flip()
+		core.wait(1)
 	
 		win.setRecordFrameIntervals(True) # frame time tracking
 		globalClock.reset()		
@@ -293,14 +281,8 @@ def empathyp(expe):
 			frameN=-1
 			nDone=0
 			
-		#--------------------------------------
-		# Show Instruction		
-		#--------------------------------------
-		
-			fixation_cross.setAutoDraw(True)
-			win.flip()
-			core.wait(2)
-
+					
+			stimDuration = 2.5
 			
 		#--------------------------------------
 		# Run Trials
@@ -309,55 +291,43 @@ def empathyp(expe):
 
 			# save data for the trial loop using psychopy function
 				trials.saveAsWideText(filename + '.csv', delim=';', appendFile = False)
-	
-	
-				thisRespKeys = []
+					
+
+				thisResp = [] # to store resp key and resp time
 
 		
 				#--------------------------------------
 				# Load stimuli image and set trials
 				# variables
 				#--------------------------------------
-				if thisTrial['Stim'] != 'pause':	
+				if thisTrial['Stim'] != 'pause' and thisTrial['Stim'] != 'blank':	
 					stim = visual.ImageStim(win, image = os.path.join(im_dir, thisTrial['Stim']), size=(STIM_SIZE ))
-				thisITI = thisTrial['ITI']
-				stimOnset = trialClock.getTime()
-				
-				
+					stimOnset = trialClock.getTime()
 				#--------------------------------------
 				# Display trials		
 				#--------------------------------------
-				if thisTrial['Stim'] != 'probe.png' and thisTrial['Stim'] != 'pause': # case trial is stimuli 
-					while trialClock.getTime() < stimOnset + StimDuration :
+				if thisTrial['Stim'] != 'blank' and thisTrial['Stim'] != 'pause': # case trial is stimuli 
+					
+					while trialClock.getTime() < stimOnset + stimDuration :
 						fixation_cross.draw()
-						fixation.draw()
 						stim.draw()
 						win.flip()
-						
-					theseKeys= getResponse(keyList= keyGo, duration = stimDuration ) # evaluate response
-					if len(theseKeys)>0: # at least one key was pressed
-						thisRespKeys = theseKeys[-1] # get just the last key pressed
-						thisResponseTime = trialClock.getTime() 
-				
-				elif thisTrial['Stim'] == 'blank': # case trial is thought probe
-					fixation.draw()
-					stim.draw()
-					win.flip()	
-					core.wait(1,hogCPUperiod=1)
-					if len(theseKeys)>0: # at least one key was pressed
-						thisRespKeys = theseKeys[-1] # get just the last key pressed
-						thisResponseTime = trialClock.getTime() 
-
-				elif thisTrial['Stim'] == 'pause':	# case pause for hypnosis reinforcement
-					fixation.draw()
+						thisResp= getResponse(keyGo, stimDuration ) # evaluate response
+				elif thisTrial['Stim'] == 'blank': # case trial is blank trial
+					fixation_cross.draw()
 					win.flip()
-					core.wait(PAUSE)
-					theseKeys= []
-		
-				fixation.draw()
-				fixation_cross.setAutoDraw(True)
+					stimOnset = trialClock.getTime()
+					thisResp= getResponse(keyGo, stimDuration ) # evaluate response
+					core.wait(5)
+				elif thisTrial['Stim'] == 'pause':	# case pause for hypnosis reinforcement
+					pause.draw()
+					win.flip()
+					#core.wait(PAUSE)
+	
+
+				fixation_cross.draw()
 				win.flip()
-				core.wait(thisITI) 
+				core.wait(thisTrial['ITI']) 
 				nDone +=1
 					
 									
@@ -369,11 +339,12 @@ def empathyp(expe):
 				#--------------------------------------
 				# store trial data
 				#--------------------------------------
-				trials.addData('respKey',thisRespKeys)
+				if len(thisResp)>0 :
+					trials.addData('respKey',thisResp[0])
+					trials.addData('respTime', thisResp[1])
 	#			trials.addData('respCorr', respCorr)
 				trials.addData('stimOnset', stimOnset)
-				if theseKeys != []:
-					trials.addData('respTime', thisResponseTime)
+
 				thisExp.nextEntry() 
 		# get names of stimulus parameters
 				if trials.trialList in ([], [None], None): params = []
@@ -387,20 +358,12 @@ def empathyp(expe):
 		# End Experiment	
 		#--------------------------------------
 			core.wait(1)
-			fixation_cross.setAutoDraw(False)
 			win.flip()
 			
-			fixation.draw()	
 			theEnd.draw(win)
 			win.flip()
 			core.wait(3)
 	
-		#--------------------------------------
-		# Revert Hypnosis Induction	
-		#--------------------------------------
-			induction()
-			event.waitKeys(keyList = keyInd)	
-
 
 	
 			if is_fmri == 1:
@@ -417,4 +380,4 @@ def empathyp(expe):
 	win.close()
 	core.quit()
 
-tubex('behav')				
+empathyp('fmri')				
