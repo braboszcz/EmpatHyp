@@ -126,7 +126,7 @@ def empathyp(expe):
 	# Setup the Window
 	#---------------------------------------
 	win = visual.Window([1280,1024],color = BACKGROUND_COLOR,monitor ='testMonitor',  units='height',
-	fullscr = False, colorSpace = 'rgb')
+	fullscr = True, colorSpace = 'rgb')
 
 	#---------------------------------------
 	# Setup Paths to read files
@@ -288,7 +288,7 @@ def empathyp(expe):
 			for thisTrial in trials:
 
 			# save data for the trial loop using psychopy function
-				trials.saveAsWideText(filename + '.csv', delim=';', appendFile = False)
+				trials.saveAsWideText(filename + '.csv', delim=',', appendFile = False)
 					
 
 				thisResp = [] # to store resp key and resp time
