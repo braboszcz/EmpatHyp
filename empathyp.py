@@ -34,10 +34,8 @@ def getResponse(validResponses,duration=0):
 		return [responded[0],rt] #only get the first response. no timer for waitKeys, so do it manually w/ a clock
 	else:
 		while responseTimer.getTime() < duration:
-			print responseTimer.getTime(), duration	
 			if not responded:
 				responded = event.getKeys(keyList=validResponses,timeStamped=responseTimer)
-				print responded
 		if not responded:
 			return ['*','*']
 		else:
@@ -51,7 +49,7 @@ def empathyp(expe):
 	TRIALS_FILE = 'toto.csv'
 	PAUSE = 10 # Time to pause for hypnosis reinforcement
 	STIM_SIZE = 0.5, 0.5 
-	BACKGROUND_COLOR = [-0.5, -0.5, -0.5]
+	BACKGROUND_COLOR = [1,1,1]
 	
 	start_expe = 0
 	#---------------------------------------
@@ -144,7 +142,7 @@ def empathyp(expe):
 	instruct1 = visual.TextStim(win=win, ori=0, name='instruct1',
 	    text="Consignes : \n\n Pressez le bouton uniquement lorsque l'image est celle d'une main droite. \n\n Ne pressez pas le bouton lorsque l'image est une image de main gauche. \n\n\n Appuyer sur espace pour continuer.", font='Arial',
 	    pos=[0, 0], height=0.04, wrapWidth=None,
-	    color='white', colorSpace='rgb', opacity=1.0,
+	    color='black', colorSpace='rgb', opacity=1.0,
 	    depth=0.0)
 
 	#---------------------------------------
@@ -168,7 +166,7 @@ def empathyp(expe):
 		   text='+',
 		   font='Arial',
 		   pos=[0, 0], height=0.06,		
-		   color='white')
+		   color='black')
 	fixation_cross.setLineWidth = 0.4
 
 

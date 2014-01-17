@@ -38,10 +38,10 @@ def genTrialList():
 	#------------------------------------------------------------------------
 	# define numbers of each type of trials
 	#------------------------------------------------------------------------
-	nNoGo = 30*4
-	nGo = 32 #( env. 25% de nNoGo. allows for 8 pictures of each conditions)
+	nNoGo = 30*2
+	nGo = 12 #(  20% de nNoGo. allows for 8 pictures of each conditions)
 	nOdd = 5	
-	nNull = 30
+	nNull = 12
 
 	#------------------------------------------------------------------------
 	# read stim file name in folder
@@ -62,7 +62,6 @@ def genTrialList():
 	#------------------------------------------------------------------------
 	with open('fMRI_jitter.txt') as jitter:
 		ISI = jitter.read().splitlines()	
-
 	#------------------------------------------------------------------------
 	# create list of desired amount of Go and No Go Trials and Thought Probes
 	#------------------------------------------------------------------------
@@ -96,7 +95,7 @@ def genTrialList():
 			trial = ['foot.bmp' ,'oddball', str(ISI[i])]
 		
 		elif trials[i] == 5:
-			trial = ['blank', 'blank', str(ISI[i])]
+			trial = ['blank', 'blank', 5]
 
 		elif trials[i] == 4:
 			trial = ['pause', 'pause']
@@ -105,13 +104,13 @@ def genTrialList():
 			stim = nogoStim[indnoGo]
 			trial = [stim,'no-go',str(ISI[i])]
 			indnoGo += 1
-			print indnoGo
+		#	print indnoGo
 		elif trials[i] == 1:	
 			stim = goStim[indGo]
 			
 			trial = [stim,'go',str(ISI[i])]
 			indGo += 1
-			print indGo
+		#	print indGo
 		writeTrials.writerow(trial)
 	
 
