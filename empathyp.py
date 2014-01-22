@@ -16,6 +16,7 @@ import os
 from psychopy.hardware.emulator import launchScan
 from psychopy import parallel
 
+
 core.wait(0.5)
 
 
@@ -72,7 +73,15 @@ def empathyp(expe):
 	else:
 		print('Experience type can be behav or fmri only ')
 
+	#---------------------------------------
+	# Set up parallel port for eye tracker
+	#---------------------------------------
 	
+	parallel.setPortAdress(0x0378) #may need to be changed
+	pinNumber = 3
+	parallel.setData(0) 
+
+
 		
 	#---------------------------------------
 	# Create timers
@@ -99,6 +108,8 @@ def empathyp(expe):
 	    originPath=None,
 	    savePickle=False, saveWideText=False) #prevent the experiment handler to write expe data upon termination (and overwriting our files)
 	
+
+
 	#---------------------------------------
 	# Load trial files 
 	#---------------------------------------
@@ -172,13 +183,6 @@ def empathyp(expe):
 
 
 	if is_fmri == 1 :
-		#---------------------------------------
-		# Set up parallel port for eye tracker
-		#---------------------------------------
-
-		#parallel.PParallelInpOut32(address = 0x0378) #may need to be changed
-		#parallel.setData(0)
-
 
 		#---------------------------------------
 		# Settings for launch scan 
@@ -214,6 +218,7 @@ def empathyp(expe):
 		# can simulate user responses, here 3 key presses in order 'a', 'b', 'c' (they get sorted by time):
 		simResponses = [(0.123, 'a'), (4.789, 'c'), (2.456, 'b')]
 
+	
 
 		#---------------------------------------
 		# launch scanner
@@ -292,8 +297,8 @@ def empathyp(expe):
 					
 
 				thisResp = [] # to store resp key and resp time
-
-		
+				parallel.setData(0) # sets all pins to low
+					
 				#--------------------------------------
 				# Load stimuli image and set trials
 				# variables
@@ -310,6 +315,7 @@ def empathyp(expe):
 						fixation_cross.draw()
 						stim.draw()
 						win.flip()
+						parallel.setPin(pinNumber, 1) # sets pinNumber (variable defined at the beginning) to be high
 						thisResp= getResponse(keyGo, stimDuration ) # evaluate response
 				elif thisTrial['Stim'] == 'blank': # case trial is blank trial
 					fixation_cross.draw()
@@ -325,6 +331,7 @@ def empathyp(expe):
 
 				fixation_cross.draw()
 				win.flip()
+				parallel.setData(0)
 				core.wait(thisTrial['ITI']) 
 				nDone +=1
 					
