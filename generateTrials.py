@@ -41,7 +41,6 @@ def genTrialList():
 	nNoGo = 30*2
 	nGo = 12 #(  20% de nNoGo. allows for 8 pictures of each conditions)
 	nOdd = 5	
-	nNull = 12
 
 	#------------------------------------------------------------------------
 	# read stim file name in folder
@@ -70,16 +69,18 @@ def genTrialList():
 	trials = [NOGO] * nNoGo
 	trials += [GO] * nGo
 	trials += [ODDBALL] * nOdd
-	trials += [NULL]*nNull
+	#trials += [NULL]*nNull
 	random.shuffle(trials)
 	
+	# insert regular null event for resting control condition
+	for i in range (1, len(trials)+len(trials)/6,6):
+		trials.insert(i, NULL)	
+		print i	
 
-	
 	# then insert PAUSE (hypnosis reinforcement) 
-#	for i in range(1,len(trials), len(trials)/2):
-#		if i != 1:
-#			trials.insert(i,PAUSE) 
-	
+	for i in range(1,len(trials), len(trials)/2):
+		if i != 1:
+			trials.insert(i,PAUSE) 
 	#------------------------------------------------------------------------
   	# create list of trials
 	#------------------------------------------------------------------------
