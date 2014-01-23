@@ -96,10 +96,10 @@ def genTrialList():
 			trial = ['foot.bmp' ,'oddball', str(ISI[i])]
 		
 		elif trials[i] == 5:
-			trial = ['blank', 'blank', 5]
+			trial = ['blank', 'blank', 5, 'NA', 'NA']
 
 		elif trials[i] == 4:
-			trial = ['pause', 'pause']
+			trial = ['pause', 'pause', 'NA', 'NA']
 
 		elif trials[i] == 2: 	
 			stim = nogoStim[indnoGo]

@@ -47,10 +47,12 @@ def empathyp(expe):
 	# Set Variables
 	#---------------------------------------
 
-	TRIALS_FILE = 'toto.csv'
-	PAUSE = 10 # Time to pause for hypnosis reinforcement
+	TRIALS_FILE = 'run1.csv' # run2
+	PAUSE = 30 # Time to pause for hypnosis reinforcement
 	STIM_SIZE = 0.5, 0.5 
 	BACKGROUND_COLOR = [1,1,1]
+	
+	stimDuration = 2.5
 	
 	start_expe = 0
 	#---------------------------------------
@@ -68,8 +70,8 @@ def empathyp(expe):
 		is_fmri = 1
 
 		keyInd = ['space'] # for induction picture
-		keyGo = ['3', 'none'] # response to go stimuli
-		keyPass = ['space'] # for passing screens
+		keyGo = ['4', 'none'] # response to go stimuli
+		keyPass = ['1'] # for passing screens
 	else:
 		print('Experience type can be behav or fmri only ')
 
@@ -77,9 +79,9 @@ def empathyp(expe):
 	# Set up parallel port for eye tracker
 	#---------------------------------------
 	
-	parallel.setPortAdress(0x0378) #may need to be changed
-	pinNumber = 3
-	parallel.setData(0) 
+	#parallel.setPortAddress(0x0378) #may need to be changed
+	#pinNumber = 3
+	#parallel.setData(0) 
 
 
 		
@@ -151,7 +153,7 @@ def empathyp(expe):
 	#--------------------------------------- 
 	#instrPracticeClock = core.Clock()
 	instruct1 = visual.TextStim(win=win, ori=0, name='instruct1',
-	    text="Consignes : \n\n Pressez le bouton uniquement lorsque l'image est celle d'une main droite. \n\n Ne pressez pas le bouton lorsque l'image est une image de main gauche. \n\n\n Appuyer sur espace pour continuer.", font='Arial',
+	    text="Consignes : \n\n Pressez le bouton 4 uniquement lorsque l'image est celle d'une main gauche. \n\n Ne pressez pas le bouton lorsque l'image est une image de main droite. Appuyer sur le 1 pour continuer  \n\n\n.", font='Arial',
 	    pos=[0, 0], height=0.04, wrapWidth=None,
 	    color='black', colorSpace='rgb', opacity=1.0,
 	    depth=0.0)
@@ -162,6 +164,12 @@ def empathyp(expe):
 	#instrPracticeClock = core.Clock()
 	theEnd = visual.TextStim(win=win, ori=0, name='theEnd',
 	    text="Fin", font='Arial',
+	    pos=[0, 0], height=0.04, wrapWidth=None,
+	    color='black', colorSpace='rgb', opacity=1,
+	    depth=0.0)
+
+	pause = visual.TextStim(win=win, ori=0, name='pause',
+	    text="Vous pouvez faire une pause", font='Arial',
 	    pos=[0, 0], height=0.04, wrapWidth=None,
 	    color='black', colorSpace='rgb', opacity=1,
 	    depth=0.0)
@@ -285,7 +293,7 @@ def empathyp(expe):
 			nDone=0
 			
 					
-			stimDuration = 2.5
+
 			
 		#--------------------------------------
 		# Run Trials
@@ -297,7 +305,7 @@ def empathyp(expe):
 					
 
 				thisResp = [] # to store resp key and resp time
-				parallel.setData(0) # sets all pins to low
+				#parallel.setData(0) # sets all pins to low
 					
 				#--------------------------------------
 				# Load stimuli image and set trials
@@ -315,7 +323,7 @@ def empathyp(expe):
 						fixation_cross.draw()
 						stim.draw()
 						win.flip()
-						parallel.setPin(pinNumber, 1) # sets pinNumber (variable defined at the beginning) to be high
+					#	parallel.setPin(pinNumber, 1) # sets pinNumber (variable defined at the beginning) to be high
 						thisResp= getResponse(keyGo, stimDuration ) # evaluate response
 				elif thisTrial['Stim'] == 'blank': # case trial is blank trial
 					fixation_cross.draw()
@@ -326,12 +334,12 @@ def empathyp(expe):
 				elif thisTrial['Stim'] == 'pause':	# case pause for hypnosis reinforcement
 					pause.draw()
 					win.flip()
-					#core.wait(PAUSE)
+					core.wait(PAUSE)
 	
 
 				fixation_cross.draw()
 				win.flip()
-				parallel.setData(0)
+				#parallel.setData(0)
 				core.wait(thisTrial['ITI']) 
 				nDone +=1
 					
