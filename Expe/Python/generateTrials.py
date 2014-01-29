@@ -22,7 +22,11 @@ def lefthand(stim):
 def righthand(stim):
 	return True if stim[0] in  ['R'] else False
 
+def oddball(stim):
+    return True if stim[0] in ['o'] else False
+
 is_go = lefthand
+is_odd = oddball
 
 def genTrialList():
 	""" 
@@ -39,8 +43,8 @@ def genTrialList():
 	# define numbers of each type of trials
 	#------------------------------------------------------------------------
 	nNoGo = 30*2
-	nGo = 16 #(  20% de nNoGo. allows for 8 pictures of each conditions)
-	nOdd = 15	
+	nGo = 12 #(  20% de nNoGo. allows for 8 pictures of each conditions)
+	nOdd = 5	
 
 	#------------------------------------------------------------------------
 	# read stim file name in folder
@@ -49,22 +53,23 @@ def genTrialList():
 		stimList = files
 	random.shuffle(stimList)
 	
-	#------------------------------------------------------------------------
-	# categorize stim into go and no go list
+	#------------------------------------------------------------------------   # categorize stim into go and no go list
 	#------------------------------------------------------------------------
 	goStim = [stim for stim in stimList if is_go(stim)]
 	nogoStim = [stim for stim in stimList if not is_go(stim)]
 	random.shuffle(goStim)
 	random.shuffle(nogoStim)	
-	#------------------------------------------------------------------------
-	# read jitter list
+	oddballStim = [stim for stim in stimList if is_odd(stim)]
+
+	#------------------------------------------------------------------------	# read jitter list
 	#------------------------------------------------------------------------
 	with open('fMRI_jitter.txt') as jitter:
 		ISI = jitter.read().splitlines()	
-	#------------------------------------------------------------------------
-	# create list of desired amount of Go and No Go Trials and Thought Probes
-	#------------------------------------------------------------------------
-	# first, mix GO and NOGO when unrelated to PROBES
+
+	#------------------------------------------------------------------------	# create list of desired amount of Go and No Go Trials   
+	#-----------------------------------------------------------------------
+
+	# mix Go and No Go
 	
 	trials = [NOGO] * nNoGo
 	trials += [GO] * nGo
@@ -93,8 +98,9 @@ def genTrialList():
 	
 	for i in range(len(trials)):
 		if trials[i] == 3:
-			trial = ['foot.bmp' ,'oddball', str(ISI[i])]
-		
+		    stim   = oddballStim[indOdd]
+		    trial  = [stim ,'oddball', str(ISI[i])]
+		    indOdd +=1
 		elif trials[i] == 5:
 			trial = ['blank', 'blank', 5]
 
