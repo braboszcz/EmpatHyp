@@ -39,8 +39,8 @@ def genTrialList():
 	# define numbers of each type of trials
 	#------------------------------------------------------------------------
 	nNoGo = 30*2
-	nGo = 12 #(  20% de nNoGo. allows for 8 pictures of each conditions)
-	nOdd = 5	
+	nGo = 16 #(  20% de nNoGo. allows for 8 pictures of each conditions)
+	nOdd = 15	
 
 	#------------------------------------------------------------------------
 	# read stim file name in folder

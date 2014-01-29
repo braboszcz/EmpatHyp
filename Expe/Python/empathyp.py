@@ -47,7 +47,7 @@ def empathyp(expe):
 	# Set Variables
 	#---------------------------------------
 
-	TRIALS_FILE = 'run1.csv' # run2
+	TRIALS_FILE = 'toto.csv' # run2
 	PAUSE = 30 # Time to pause for hypnosis reinforcement
 	STIM_SIZE = 0.5, 0.5 
 	BACKGROUND_COLOR = [1,1,1]
