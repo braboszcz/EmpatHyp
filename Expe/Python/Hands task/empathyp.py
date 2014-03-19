@@ -213,6 +213,7 @@ def empathyp(expe):
 		#if not infoDlg.OK: core.quit() 
 
         globalClock = core.Clock()
+        mode = 'Scan'
 
 		#summary of run timing for each key press:
         output = 'vol onset key\n'
