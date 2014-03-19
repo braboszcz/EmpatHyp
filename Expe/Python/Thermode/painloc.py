@@ -42,6 +42,10 @@ thisExp = data.ExperimentHandler(name=expName, version='',
 
 # Setup files for logfile  saving
 
+with open(dfsdfsfsdf) as backup:
+
+    backup.write(dfsdfsd)
+    backup.flush()
 if not os.path.isdir('Logdata'):
     os.makedirs('Logdata')  # if this fails (e.g. permissions) we will get error
     filename = 'Logdata' + os.path.sep + '%s_%s' %(expInfo['participant'], expInfo['session'])
@@ -49,13 +53,9 @@ if not os.path.isdir('Logdata'):
     logFileExp = logging.LogFile(filename +'.log', level=logging.EXP)
     logging.console.setLevel(logging.INFO)  # this outputs to the screen, not a file
 
-save_filename= '%s_%s' %(expInfo['participant'], expInfo['session'])
-trials = data.TrialHandler([], nReps=1, method='sequential', extraInfo=expInfo)
-trials.data.addDataType('stim type')
-trials.data.addDataType('stim onset')
-trials.data.addDataType('base onset')
-trials.data.addDataType('ISI')
-   
+#trialList = data.importConditions('test.csv', returnFieldNames=False)
+ 
+
 
 #----------------------
 # Thermode settings
@@ -75,9 +75,11 @@ nox_temp = expInfo['threshold']
 # Pain localizer settings
 #-------------------------
 
-n_stim = 6
+n_stim = 1
 nox = 1
 no_nox = 2
+
+temp_list = []
 
 stim_list = [nox] * n_stim 
 stim_list += [no_nox] *n_stim
@@ -86,7 +88,17 @@ random.shuffle(stim_list)
 
 isi_list = np.random.uniform(8,18, 12)
 
+for stim in range(len(stim_list)):
+    for isi in range(len(isi_list)):
+        temp_list.append({'stim':stim_list[stim], 'ISI': isi_list[isi]})
 
+save_filename= '%s_%s' %(expInfo['participant'], expInfo['session'])
+trials = data.TrialHandler(temp_list, nReps=1, method='sequential', extraInfo=expInfo)
+trials.data.addDataType('stim type')
+trials.data.addDataType('stim onset')
+trials.data.addDataType('base onset')
+trials.data.addDataType('ISI')
+   
 
 
 #---------------------------------------
@@ -108,16 +120,16 @@ fixation_cross.setLineWidth = 0.4
 #!!!!!!! insert fmri launchscan
 #-----------------------------------
 
-for stim in range(len(stim_list)):
+for thisTrial in trials:
 # save data for the trial loop using psychopy function
-    trials.saveAsWideText(save_filename + '.csv', delim=',', appendFile = False)
+   # trials.saveAsWideText(save_filename + '.csv', delim=',', appendFile = False)
     #trials.addData('scanOnset', onset)
     thisResp = [] # to store resp key and resp time
     stim_onset = globalClock.getTime()
     
 
 
-    if stim_list[stim] == 1:
+    if trials['stim'] == 1:
         print nox_temp
         #msa.MsaReachStimTemp(nox_temp, slope)
         
@@ -135,15 +147,17 @@ for stim in range(len(stim_list)):
     print base_temp
     base_onset = globalClock.getTime()
     #msa.MsaReachStimTemp(base_temp, slope)
-    core.wait(round(isi_list[stim], 2))
-    
-    trials.addData('stim type', stim_list[stim])
-    trials.addData('stim onset', stim_onset)
-    trials.addData('base onset', base_onset)
-    trials.addData('ISI', isi_list[stim])
+   # core.wait(round(isi_list[thisTrial], 2))
+    core.wait(thisTrial[ISI])
+
+    trials.data.addData('stim type', trials[thisTrial])
+    trials.data.addData('stim onset', stim_onset)
+    trials.data.addData('base onset', base_onset)
+    trials.data.addData('ISI', isi_list[stim])
 
 #msa.MsaClose()
 the_end.draw()
 win.flip()
 core.wait(3)
 
+trials.saveAsText(filename = save_filename, stimOut = ['stim type', 'stim onset', 'base onset','ISI'])
